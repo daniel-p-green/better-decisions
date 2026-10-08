@@ -28,6 +28,14 @@ Invoke it with `$better-decisions`, for example:
 
 For another compatible agent, install the complete directory using that host’s supported skill mechanism. `SKILL.md` is the entry point; `agents/openai.yaml` provides optional host metadata.
 
+## Prompt examples
+
+- [OpenAI Decisions](references/openai-prompt-patterns.md): multiline questions, contrastive choices, ordered anchors, and evidence boundaries
+- [TypeSafe Jev](references/typesafe-prompt-patterns.md): structured instructions, criteria, examples, and application-side gates
+- [Cloudflare Clef](references/cloudflare-prompt-patterns.md): hosted request layouts, chronology, image mapping, and bundle tests
+
+Each library includes original before/after patterns and distinguishes formatting changes from changes to the decision policy. Examples are untested candidates.
+
 ## Package
 
 - `SKILL.md`: workflow and provider selection

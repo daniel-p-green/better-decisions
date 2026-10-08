@@ -1,6 +1,6 @@
 ---
 name: better-decisions
-description: Build and refine decision-model workflows, especially OpenAI Decisions API, plus TypeSafe Jev and Cloudflare Clef. Use for plain-language goal to decision criteria/request/test cases, existing prompt or implementation refinement, provider selection, routing, filtering, classification, ordinal scoring, selective fallback, evaluation, and LLM workflow cost/complexity reduction. Verify other providers from their own docs. Not for unrelated chat prompting or arbitrary JSON generation.
+description: Build and refine decision-model workflows, especially OpenAI Decisions API, plus TypeSafe Jev and Cloudflare Clef. Use for plain-language goals, prompt structures/formatting and before-after examples, decision criteria/request/test cases, existing implementation refinement, provider selection, routing, filtering, classification, ordinal scoring, selective fallback, evaluation, and workflow cost/complexity reduction. Verify other providers from their own docs. Not for unrelated chat prompting or arbitrary JSON generation.
 ---
 
 # Better Decisions
@@ -18,10 +18,10 @@ Read [prompting-and-evaluation.md](references/prompting-and-evaluation.md) for p
 
 Preserve an explicitly chosen provider, model, and hosted/local deployment. If unspecified, assume OpenAI Decisions and state that assumption. For actual provider selection, compare task/output fit, available evidence/modalities, existing integration, hosted versus self-hosted requirements, data/access constraints, budget and measured quality/latency; do not rank by a vendor benchmark or token price alone. Read the deployment/cost tradeoffs in [workflow-fit-and-economics.md](references/workflow-fit-and-economics.md).
 
-Read only the selected contract before writing provider syntax:
-- **OpenAI:** [openai-contract.md](references/openai-contract.md), with `predicate`, `choice`, and `score` on Decisions.
-- **TypeSafe Jev:** [typesafe-contract.md](references/typesafe-contract.md), with its own `state`/question-map/`criteria` contract and Noul.
-- **Cloudflare Clef:** [cloudflare-contract.md](references/cloudflare-contract.md), distinguishing Workers AI hosting from the local model-card path.
+Read the selected contract before writing provider syntax; also read its prompt patterns when drafting or refining wording/format:
+- **OpenAI:** [contract](references/openai-contract.md) and [prompt patterns](references/openai-prompt-patterns.md), with `predicate`, `choice`, and `score` on Decisions.
+- **TypeSafe Jev:** [contract](references/typesafe-contract.md) and [prompt patterns](references/typesafe-prompt-patterns.md), with its own `state`/question-map/`criteria` contract and Noul.
+- **Cloudflare Clef:** [contract](references/cloudflare-contract.md) and [prompt patterns](references/cloudflare-prompt-patterns.md), distinguishing Workers AI hosting from the local model-card path.
 - **Another provider/model:** obtain and read its first-party API/model docs or inspect the relevant installed SDK. Establish its actual contract and limits; do not invent an OpenAI- or Jev-compatible adapter.
 
 Refresh official links when executable integration, availability, limits, or pricing matter. Label unverified dated facts rather than guessing. Keep endpoint selectors, request/response shapes, score/confidence semantics, independence guarantees, modalities, limits, pricing, and deployment requirements provider-specific. Do not use confidence thresholds across providers without revalidation. For transferable hypotheses and “Cleft” naming uncertainty, read [cross-model-notes.md](references/cross-model-notes.md).
@@ -37,6 +37,16 @@ Read [workflow-fit-and-economics.md](references/workflow-fit-and-economics.md) f
 
 For an existing workflow, map calls, dependencies, consumed outputs, error/review policy, volume, spend, and latency. For a new design, map the proposed path without demanding an existing system. Propose the smallest useful design/change. Distinguish direct replacement, prefiltering, routing, and selective fallback. If every case still needs generation, count that call instead of claiming it disappeared. Compare whole-workflow quality, total cost, tail latency, and maintenance complexity; a cheap extra gate can still make a system worse.
 
+## Build a useful prompt structure
+
+Separate **request format** (provider fields/types), **evidence format** (records, attribution, chronology, missing fields), and **judgment wording** (question, scope, boundaries, alternatives/anchors). A valid JSON body can still contain a poor prompt.
+
+Start with the complete atomic question, then add only useful evidence scope, inclusions/exclusions and missing-data handling. Use self-contained, parallel choice/rubric descriptions. Choose a compact string or a supported structured instruction/criteria layout from the selected provider's patterns; keep dynamic evidence separate from the stable judgment. Put application-side gating and orchestration notes outside the model question; never ask it to read a sibling's not-yet-emitted answer. Formatting is not an instruction hierarchy or injection defense by itself.
+
+When examples or refinement are requested, show an original/before instruction, a concrete after version inside the provider's real request shape, and a brief annotation of what changed. Distinguish layout-only, wording, evidence/preprocessing, policy/taxonomy, and rubric changes. Preserve machine values and ordinal order. Include boundary and insufficient-evidence cases; do not make missing evidence a lowest score or a negative fact.
+
+Treat headings, JSON organization, complete-statement descriptions, or few-shot blocks as candidate formats to evaluate. Do not import generative system roles, reasoning transcripts, prose-output requests or sampling controls into a bounded endpoint. Read [prompting-and-evaluation.md](references/prompting-and-evaluation.md) for the format comparison procedure and keep any example labels grounded in the agreed policy.
+
 ## Work from evidence to a candidate
 
 1. Capture the goal and any available prompt/request, representative inputs, expected decisions, allowed evidence, label/rubric definitions, error costs, and budget. Ask only for missing information that changes the task; a spend budget is needed for paid testing, not for an offline first draft. With no examples, provide a provisional draft and synthetic test cases; mark labels pending where policy is unknown. Do not invent an operational policy or remove a required explanation.
@@ -48,6 +58,6 @@ For an existing workflow, map calls, dependencies, consumed outputs, error/revie
 
 ## Deliver
 
-Return the decision/workflow choice and rationale, proposed prompt or valid request shape, unresolved assumptions or policy questions, representative tests, and an evaluation plan or measured comparison. For cost/workflow work, include which calls/outputs disappear, a whole-workflow cost estimate with fallback break-even, quality and latency constraints, and what complexity is added or removed. Separate documented API facts, hypotheses, and actual measurements. State exactly what was tested. Never claim improved accuracy, latency, savings, calibration, or production readiness from static review.
+Return the decision/workflow choice and rationale, concrete provider-native prompt/request, unresolved assumptions or policy questions, representative tests, and an evaluation plan or measured comparison. For prompt-format/refinement work, include an annotated before/after and explain where evidence, instructions, examples and option/level descriptions belong. For cost/workflow work, include which calls/outputs disappear, a whole-workflow cost estimate with fallback break-even, quality and latency constraints, and what complexity is added or removed. Separate documented API facts, hypotheses, and actual measurements. State exactly what was tested. Never claim improved accuracy, latency, savings, calibration, or production readiness from static review.
 
 Skill invocation authorizes no paid inference, data upload, deployment, ticket closure, or other external action by itself. Do useful offline work first; run live evaluations only within the user's authorized scope and budget. Keep the agreed baseline for comparison/rollback and stop experimentation when its agreed budget or acceptance decision is reached.

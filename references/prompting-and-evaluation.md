@@ -2,6 +2,27 @@
 
 These are engineering recommendations to test, not API guarantees. They build on [OpenAI evaluation guidance](https://developers.openai.com/api/docs/guides/evaluation-best-practices) and the provider-specific sources in cross-model-notes.md.
 
+Contents: [Format experiments](#compare-prompt-structures-without-changing-the-job) · [Plain-language start](#from-plain-language-to-a-first-candidate) · [Rewrite](#a-concrete-rewrite-pattern) · [Choice-order example](#maynes-choice-order-experiment) · [Cases](#representative-cases) · [Evaluation](#evaluation-protocol) · [Results](#result-format)
+
+## Compare prompt structures without changing the job
+
+Treat three layers separately: provider request syntax, evidence serialization, and the judgment's wording/criteria. Choose the selected provider's prompt-pattern reference from SKILL.md for concrete examples; do not transpose an OpenAI string into an unsupported object or copy Jev fields into OpenAI.
+
+Use a short task/scope/boundary layout when a paragraph becomes hard to inspect. For supported structured instructions or criteria, reuse descriptive keys across alternatives so differences are semantic rather than accidental shape changes. These keys are prompt content, not new API parameters. Serialize data with a real JSON encoder; escape strings and preserve typed machine values. Record chronology with explicit speaker/turn fields or ordered arrays rather than implying that object-key order expresses time. Keep unavailable evidence explicit, but do not turn null into proof of a negative condition.
+
+Build a before/after comparison with an exact change ledger:
+- **Layout-only:** same criteria and evidence, reorganized into sections or supported objects. Test it without also changing the taxonomy.
+- **Wording:** a clearer proposition, evidence scope, or parallel/contrastive descriptions. Verify that the paraphrase preserves the approved boundary.
+- **Evidence:** selection, attribution, chronology, serialization, or retrieval changed. Report this as preprocessing/context work, not solely a better instruction.
+- **Policy/taxonomy:** priority rules, allowed knowledge, missing-data outcome, categories, or action behavior changed. Obtain agreement and update labels; never hide this as a formatting fix.
+- **Rubric:** level definitions, number or order changed. It is a new scale; retain an explicit mapping and comparison contract.
+
+If demonstrations are useful, add a small separately marked block of correctly adjudicated development examples. State the example evidence and target outcome, and distinguish it from the live case. Do not include the current case's expected answer, hidden test labels, invented probabilities, or a made-up reasoning transcript. Positive, negative, boundary and missing-data examples usually expose more than repeated easy positives. Examples do not create a new response field; the endpoint still returns its documented primitive.
+
+Choose an interpretable experiment: paragraph versus labeled sections; string versus supported object; terse versus complete-statement option descriptions; rubric anchors with versus without a relevant example. Hold the model, task semantics, labels/levels, evidence and action threshold fixed when testing layout alone. Evaluate the same labeled cases; track quality, accepted coverage, refusals/errors, order/threshold stability, token usage and full-workflow latency. More structure, more examples, stronger wording, or higher confidence is not automatically better.
+
+Treat JSON/XML/Markdown delimiters as organization, not a security boundary. Dynamic content can still contain hostile instructions; fixed criteria, validation, permissions and action checks remain necessary. Do not add an instruction asking a decision model to emit analysis, prose reasons, arbitrary JSON, or a confidence value it does not natively return.
+
 ## From plain language to a first candidate
 
 Treat a new user's ordinary description as enough to begin. Do not demand a prompt to optimize or an existing benchmark. Translate it into:
