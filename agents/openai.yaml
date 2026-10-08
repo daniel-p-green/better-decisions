@@ -1,0 +1,14 @@
+interface:
+  display_name: Better Decisions
+  short_description: Design and refine decision models, from goals to evals
+  default_prompt: Use $better-decisions to turn my goal into a decision-model design
+    or refine my existing implementation, using the right provider contract and evaluation.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
